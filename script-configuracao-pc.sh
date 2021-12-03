@@ -22,7 +22,7 @@ x=0;
 while [ $x != ${#VERSIONS_PHP[@]} ]
 do
     version=${VERSIONS_PHP[$x]}
-    sudo apt install php$version php$version-fpm php$version-curl php$version-mysql php$version-json php$version-mbstring php$version-mcrypt;
+    sudo apt install php$version php$version-fpm php$version-curl php$version-mysql php$version-json php$version-mbstring php$version-mcrypt php$version-xml php$version-gd php$version-zip;
     let "x = x +1"
 done 
 sudo update-alternatives –set php /usr/bin/php7.4;
