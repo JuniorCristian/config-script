@@ -30,7 +30,7 @@ sudo update-alternatives --set php /usr/bin/php8.0;
 #Instalando o driver SQL Server
 sudo su
 curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-curl https://packages.microsoft.com/config/ubuntu/21.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+curl https://packages.microsoft.com/config/ubuntu/21.10/prod.list > /etc/apt/sources.list.d/mssql-release.list
 exit
 sudo apt-get update
 sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17
@@ -126,10 +126,12 @@ tar -vzxf jetbrains-toolbox.tar.gz
     wget https://github.com/dracula/thunderbird/archive/master.zip thunderbird-master.zip
 
 #Configurando Scripts
-sudo cp change_php_version.sh /bin/change_php_version
-sudo cp install_new_php_version.sh /bin/install_new_php_version
+if [ ! -d "/home/$USER/.adtional_scripts" ]; then
+    mkdir ".adtional_scripts";
+fi
+sudo cp change_php_version.sh /home/$USER/.adtional_scripts/change_php_version
+sudo ln -s /home/$USER/.adtional_scripts/change_php_version /bin/change_php_version
 chmod a+x ./bin/change_php_version
-chmod a+x ./bin/install_new_php_version
 
 #Instalando o MySql
 sudo apt install mysql-server -y;
