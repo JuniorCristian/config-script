@@ -22,7 +22,7 @@ x=0;
 while [ $x != ${#VERSIONS_PHP[@]} ]
 do
     version=${VERSIONS_PHP[$x]}
-    sudo apt install php$version php$version{-xml,-gd,-mbstring,-zip,-fpm,-curl,-mysql,-mcrypt,-dev,-imagick,-pgsql} -y --allow-unauthenticated;
+    sudo apt install php$version php$version{-xml,-gd,-mbstring,-zip,-fpm,-curl,-mysql,-mcrypt,-dev,-imagick,-cli,-common,-intl,-opcache,-readline} -y --allow-unauthenticated;
     let "x = x +1"
 done
 sudo update-alternatives --set php /usr/bin/php${VERSIONS_PHP[$x]};
@@ -102,6 +102,15 @@ wget https://download.jetbrains.com/toolbox/jetbrains-toolbox-1.22.10970.tar.gz 
 tar -vzxf jetbrains-toolbox.tar.gz
 ./jetbrains-toolbox/jetbrains-toolbox
 
+#Entensões
+
+  #Caffeine
+  git clone https://github.com/eonpatapon/gnome-shell-extension-caffeine.git /tmp/caffeine;
+  # shellcheck disable=SC2164
+  cd /tmp/caffeine;
+  sudo make build;
+  sudo make install;
+
 #Instalando Dracula Theme
 
     #Gnome Terminal
@@ -129,7 +138,7 @@ tar -vzxf jetbrains-toolbox.tar.gz
 if [ ! -d "/home/$USER/.adtional_scripts" ]; then
     mkdir ".adtional_scripts";
 fi
-sudo cp change_php_version.sh /home/$USER/.adtional_scripts/change_php_version
+sudo cp adtional_scripts/change_php_version.sh /home/$USER/.adtional_scripts/change_php_version
 sudo ln -s /home/$USER/.adtional_scripts/change_php_version /bin/change_php_version
 chmod a+x ./bin/change_php_version
 

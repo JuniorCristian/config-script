@@ -14,7 +14,7 @@ if [[ ! -e "/etc/php/$version/cli/php.ini" ]]; then
   read answer
   if [ $answer = "yes" ]; then
     echo "Instalando a versão $version"
-    sudo apt install php$version php$version{-cli,-common,-curl,-dev,-gd,-intl,-mbstring,-mysql,-opcache,-readline,-xml,-zip,-fpm,-mcrypt,-imagick}
+    sudo apt install php$version php$version{-xml,-gd,-mbstring,-zip,-fpm,-curl,-mysql,-mcrypt,-dev,-imagick,-cli,-common,-intl,-opcache,-readline};
   fi
 fi
 
