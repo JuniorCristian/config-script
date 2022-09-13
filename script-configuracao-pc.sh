@@ -139,7 +139,7 @@ tar -vzxf /tmp/jetbrains-toolbox.tar.gz
   make
   rm -rf "$HOME"/.local/share/gnome-shell/extensions/bluetooth-quick-connect@bjarosze.gmail.com
   mkdir -p "$HOME"/.local/share/gnome-shell/extensions/bluetooth-quick-connect@bjarosze.gmail.com
-  cp -r * "$HOME"/.local/share/gnome-shell/extensions/bluetooth-quick-connect@bjarosze.gmail.com
+  cp -r /tmp/bluetooth-quick-connect/* "$HOME"/.local/share/gnome-shell/extensions/bluetooth-quick-connect@bjarosze.gmail.com
 
   #Clipboard Indicator
   git clone https://github.com/Tudmotu/gnome-shell-extension-clipboard-indicator.git "$HOME"/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com
