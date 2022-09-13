@@ -1,9 +1,13 @@
 #!/bin/bash
 
-
 #Instalando todas as dependências antes
+# shellcheck disable=SC2034
+ATUAL_PATH=$(pwd)
+
+#Nala
+sudo apt install nala
 #Brave
-sudo apt install apt-transport-https curl -y;
+sudo nala install apt-transport-https curl -y;
 sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
 #PHP
@@ -13,8 +17,10 @@ wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > pa
 sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
 sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
 rm -f packages.microsoft.gpg
+#Snap
+sudo nala install snapd -y;
 #Update
-sudo apt update;
+sudo nala update;
 
 #Instalando as verões do PHP
 VERSIONS_PHP=("7.0" "7.1" "7.2" "7.3" "7.4" "8.0")
@@ -22,10 +28,11 @@ x=0;
 while [ $x != ${#VERSIONS_PHP[@]} ]
 do
     version=${VERSIONS_PHP[$x]}
-    sudo apt install php$version php$version{-xml,-gd,-mbstring,-zip,-fpm,-curl,-mysql,-mcrypt,-dev,-imagick,-cli,-common,-intl,-opcache,-readline} -y --allow-unauthenticated;
+    sudo nala install php"$version" php"$version"{-xml,-gd,-mbstring,-zip,-fpm,-curl,-mysql,-mcrypt,-dev,-imagick,-cli,-common,-intl,-opcache,-readline} -y --allow-unauthenticated;
+    # shellcheck disable=SC2219
     let "x = x +1"
 done
-sudo update-alternatives --set php /usr/bin/php${VERSIONS_PHP[$x]};
+sudo update-alternatives --set php /usr/bin/php"${VERSIONS_PHP[$x]}";
 
 #Instalando o driver SQL Server
 sudo su
@@ -35,9 +42,11 @@ exit
 sudo apt-get update
 sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17
 sudo ACCEPT_EULA=Y apt-get install -y mssql-tools
+# shellcheck disable=SC2016
 echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+# shellcheck disable=SC1090
 source ~/.bashrc
-sudo apt install -y unixodbc-dev
+sudo nala install -y unixodbc-dev
 sudo pecl install sqlsrv
 sudo pecl install pdo_sqlsrv
 sudo su
@@ -60,47 +69,53 @@ php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40
 php composer-setup.php --install-dir=bin --filename=composer --2
 php composer-setup.php --install-dir=bin --filename=composer1 --1
 
+#Docker
+sudo nala install docker docker-compose -y;
+
 #Instalando o Brave
-sudo apt install brave-browser -y;
+sudo nala install brave-browser -y;
 
 #Telegran
-sudo apt install telegram-desktop -y;
+sudo nala install telegram-desktop -y;
 
 #Git
-sudo apt install git -y;
+sudo nala install git -y;
 
 #Scrcpy
-sudo apt install scrcpy -y;
+sudo nala install scrcpy -y;
 sudo snap install guiscrcpy;
 
 #Discord
-sudo apt install discord -y;
+sudo nala install discord -y;
 
 #OBS
-sudo apt install obs-studio -y;
+sudo nala install obs-studio -y;
 
 #VisualStudio Code
-sudo apt install code -y;
+sudo nala install code -y;
 
 #Slack
-sudo apt install slack-desktop -y;
+sudo nala install slack-desktop -y;
 
 #Tmux
-sudo apt install tmux -y;
+sudo nala install tmux -y;
 
 #Arduino
-sudo apt install arduino -y;
+sudo nala install arduino -y;
 
 #Thunderbird
-sudo apt install thunderbird thunderbird-locale-pt-br -y;
+sudo nala install thunderbird thunderbird-locale-pt-br -y;
 
 #EasySSH
-sudo apt install easyssh -y;
+sudo nala install easyssh -y;
+
+#Multipass
+sudo snap install multipass;
 
 #JetBrains Toolbox
-wget https://download.jetbrains.com/toolbox/jetbrains-toolbox-1.22.10970.tar.gz jetbrains-toolbox.tar.gz
-tar -vzxf jetbrains-toolbox.tar.gz
-./jetbrains-toolbox/jetbrains-toolbox
+wget https://download.jetbrains.com/toolbox/jetbrains-toolbox-1.22.10970.tar.gz /tmp/jetbrains-toolbox.tar.gz
+tar -vzxf /tmp/jetbrains-toolbox.tar.gz
+/tmp/jetbrains-toolbox/jetbrains-toolbox
 
 #Entensões
 
@@ -111,37 +126,77 @@ tar -vzxf jetbrains-toolbox.tar.gz
   sudo make build;
   sudo make install;
 
+  #Bluetooth Battery Indicator
+  sudo nala install bluez libbluetooth-dev python3-dev python3-bluez;
+  git clone git@github.com:MichalW/gnome-bluetooth-battery-indicator.git /tmp/bluetooth-battery-indicator;
+  git submodule update --init;
+  cp -R /tmp/bluetooth-battery-indicator "$HOME"/.local/share/gnome-shell/extensions/bluetooth-battery@michalw.github.com;
+
+  #Bluetooth Quick Connect
+  git clone https://github.com/bjarosze/gnome-bluetooth-quick-connect /tmp/bluetooth-quick-connect;
+  # shellcheck disable=SC2164
+  cd /tmp/bluetooth-quick-connect;
+  make
+  rm -rf "$HOME"/.local/share/gnome-shell/extensions/bluetooth-quick-connect@bjarosze.gmail.com
+  mkdir -p "$HOME"/.local/share/gnome-shell/extensions/bluetooth-quick-connect@bjarosze.gmail.com
+  cp -r * "$HOME"/.local/share/gnome-shell/extensions/bluetooth-quick-connect@bjarosze.gmail.com
+
+  #Clipboard Indicator
+  git clone https://github.com/Tudmotu/gnome-shell-extension-clipboard-indicator.git "$HOME"/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com
+  gnome-extensions enable clipboard-indicator@tudmotu.com
+
+  #Sound Input & Output Device Chooser
+  # shellcheck disable=SC2164
+  cd "$HOME"/.local/share/gnome-shell/extensions/
+  # Remove older version
+  # shellcheck disable=SC2035
+  rm -rf *sound-output-device-chooser*
+  # Clone current version
+  git clone https://github.com/kgshank/gse-sound-output-device-chooser.git
+  # Install it
+  cp -r gse-sound-output-device-chooser/sound-output-device-chooser@kgshank.net .
+  rm -rf "gse-sound-output-device-chooser"
+  gnome-extensions enable sound-output-device-chooser@kgshank.net
+
+  #Lock Keys
+  git clone https://github.com/kazysmaster/gnome-shell-extension-lockkeys.git /tmp/lockkeys;
+  # shellcheck disable=SC2164
+  cp -r /tmp/lockkeys/lockkeys@vaina.lt "$HOME"/.local/share/gnome-shell/extensions/
+
 #Instalando Dracula Theme
 
     #Gnome Terminal
     sudo apt-get install dconf-cli;
-    git clone https://github.com/dracula/gnome-terminal;
-    ./gnome-terminal/install.sh;
-    sudo rm -R gnome-terminal;
+    git clone https://github.com/dracula/gnome-terminal /tmp/dracula_theme/gnome-terminal;
+    /tmp/dracula_theme/gnome-terminal/install.sh;
 
     #Telegran
-    git clone https://github.com/dracula/telegram.git;
+    git clone https://github.com/dracula/telegram.git /tmp/dracula_theme/telegram;
 
     #GTK
-    wget "https://github.com/dracula/gtk/archive/master.zip";
-    unzip master.zip;
-    mkdir ~/.themes/;
-    mv gtk-master/ ~/.themes/Dracula-dark;
+    wget "https://github.com/dracula/gtk/archive/master.zip" /tmp/dracula_theme/gtk;
+    unzip /tmp/dracula_theme/gtk/master.zip;
+    mkdir "$HOME"/.themes/;
+    mv /tmp/dracula_theme/gtk/gtk-master/ "$HOME"/.themes/Dracula-dark;
     gsettings set org.gnome.desktop.interface gtk-theme "Dracula-dark";
     gsettings set org.gnome.desktop.wm.preferences theme "Dracula-dark";
-    rm master.zip;
 
     #Thunderbird
     wget https://github.com/dracula/thunderbird/archive/master.zip thunderbird-master.zip
 
 #Configurando Scripts
-if [ ! -d "/home/$USER/.adtional_scripts" ]; then
-    mkdir ".adtional_scripts";
+if [ ! -d "$HOME/.additional_scripts" ]; then
+    mkdir "$HOME/.additional_scripts";
 fi
-sudo cp adtional_scripts/change_php_version.sh /home/$USER/.adtional_scripts/change_php_version
-sudo ln -s /home/$USER/.adtional_scripts/change_php_version /bin/change_php_version
+sudo cp "${ATUAL_PATH}"additional_scripts/change_php_version.sh "$HOME"/.additional_scripts/change_php_version
+sudo cp "${ATUAL_PATH}"additional_scripts/weather.sh "$HOME"/.additional_scripts/weather
+sudo ln -s "$HOME"/.additional_scripts/change_php_version /bin/change_php_version
+sudo ln -s "$HOME"/.additional_scripts/change_php_version /bin/weather
 chmod a+x ./bin/change_php_version
+chmod a+x ./bin/weather
 
 #Instalando o MySql
-sudo apt install mysql-server -y;
-sudo mysql_secure_installation;
+#sudo nala install mysql-server -y;
+#sudo mysql_secure_installation;
+
+rm -rf /tmp/*;
