@@ -17,15 +17,15 @@ rm -f packages.microsoft.gpg
 sudo apt update;
 
 #Instalando as verões do PHP
-VERSIONS_PHP=("5.6" "7.0" "7.1" "7.2" "7.3" "7.4" "8.0")
+VERSIONS_PHP=("7.0" "7.1" "7.2" "7.3" "7.4" "8.0")
 x=0;
 while [ $x != ${#VERSIONS_PHP[@]} ]
 do
     version=${VERSIONS_PHP[$x]}
-    sudo apt install php$version php$version{-xml,-gd,-mbstring,-zip,-fpm,-curl,-mysql,-mcrypt,-dev,-imagick} -y --allow-unauthenticated;
+    sudo apt install php$version php$version{-xml,-gd,-mbstring,-zip,-fpm,-curl,-mysql,-mcrypt,-dev,-imagick,-pgsql} -y --allow-unauthenticated;
     let "x = x +1"
 done
-sudo update-alternatives --set php /usr/bin/php8.0;
+sudo update-alternatives --set php /usr/bin/php${VERSIONS_PHP[$x]};
 
 #Instalando o driver SQL Server
 sudo su
